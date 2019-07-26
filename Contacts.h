@@ -5,7 +5,7 @@
 
 #include"pre.h"
 
-struct contacts {                         //ÁªÏµÈËÊôĞÔ
+struct contacts {                         //è”ç³»äººå±æ€§
 	string name;
 	string birthdate;
 	string phonenumber;
@@ -13,17 +13,17 @@ struct contacts {                         //ÁªÏµÈËÊôĞÔ
 	string originizename;
 };
            
-class operation {                         //²Ù×÷º¯Êı¼¯ºÏ
+class operation {                         //æ“ä½œå‡½æ•°é›†åˆ
 public:
 	operation();
 	~operation(){  }
-	void Initial();
+	void Initial(string & ,string &);
 	void Entry();
-	void Inquire();
+	void Inquire(string &,string&,string& );
 	void Change();
 	void Delete();
-};
-enum category {                         //Í¨Ñ¶Â¼±êÇ©Ã¶¾Ù
+}operate;
+enum category {                         //é€šè®¯å½•æ ‡ç­¾æšä¸¾
 	classmate,
     colleague,
 	family,
@@ -31,8 +31,8 @@ enum category {                         //Í¨Ñ¶Â¼±êÇ©Ã¶¾Ù
 }; 
 
 struct contact_node {
-	contacts* info;                         //¸Ã½ÚµãÁªÏµÈËĞÅÏ¢
-	contact_node* next;                //Ö¸ÏòÏÂÒ»¸öÁªÏµÈË½ÚµãÖ¸Õë
+	contacts* info;                         //è¯¥èŠ‚ç‚¹è”ç³»äººä¿¡æ¯
+	contact_node* next;                //æŒ‡å‘ä¸‹ä¸€ä¸ªè”ç³»äººèŠ‚ç‚¹æŒ‡é’ˆ
 }; 
 
 
