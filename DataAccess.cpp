@@ -7,7 +7,7 @@ MySQLinterface::MySQLinterface(void)
 	m_IsConnect = FALSE;
 	mysql_library_init(0, NULL, NULL);
 	if (mysql_init(m_sock) == NULL) {
-		printf("Êý¾Ý¿â³õÊ¼»¯Ê§°Ü\n");
+		printf("æ•°æ®åº“åˆå§‹åŒ–å¤±è´¥\n");
 		this->error_num = ERROR_FAILINITDB;
 	}
 }
@@ -22,13 +22,13 @@ BOOL MySQLinterface::ConnectDB(){
 	char* username;
 	char* password;
 	char* host = (char*)"localhost";
-	cout << "ÇëÊäÈëÊý¾Ý¿âÓÃ»§Ãû:" << endl;
+	cout << "è¯·è¾“å…¥æ•°æ®åº“ç”¨æˆ·å:" << endl;
 	cin >> username;
-	cout << "ÇëÊäÈëÊý¾Ý¿âÃÜÂë:" << endl;
+	cout << "è¯·è¾“å…¥æ•°æ®åº“å¯†ç :" << endl;
 	cin >> password;
 	if (mysql_real_connect(m_sock, host, username, password, NULL, 0, NULL, 0) == NULL)
 	{
-		printf("Êý¾Ý¿âÁ¬½ÓÊ§°Ü\n");
+		printf("æ•°æ®åº“è¿žæŽ¥å¤±è´¥\n");
 		this->error_num = ERROR_FAILCONDB;
 		return 0;
 	}
@@ -60,8 +60,8 @@ BOOL MySQLinterface::CreateTable(string& tablename) {
 	}
 }
 BOOL MySQLinterface::WriteDataToDB(string& sqlbuf, string& tablename,string& name, string& birthdate, string& phonenumber, string& email, string& originizename) {
-	string sqlbuf1 = "INSERT INTO";
-	string sqlbuf2 = "VALUES(";
+	string sqlbuf1 = "INSERT INTO ";
+	string sqlbuf2 = " VALUES(";
 	sqlbuf= sqlbuf1 + tablename + sqlbuf2;
 	strcat((char*)sqlbuf.c_str(), "'");
 	strcat((char*)sqlbuf.c_str(), name.c_str());
@@ -87,7 +87,7 @@ BOOL MySQLinterface::WriteDataToDB(string& sqlbuf, string& tablename,string& nam
 	if (mysql_query(m_sock, sqlbuf.c_str) == 0)
 	{
 		mysql_commit(m_sock);
-		cout << "Ìí¼Ó³É¹¦£¡" << endl;
+		cout << "æ·»åŠ æˆåŠŸï¼" << endl;
 		return 1;
 }
 	else{
@@ -97,16 +97,57 @@ BOOL MySQLinterface::WriteDataToDB(string& sqlbuf, string& tablename,string& nam
 
 
 }
-BOOL MySQLinterface::ReadDataFromDB(string& sqlbuf, string& tablename, string& name, string& birthdate, string& phonenumber, string& email, string& originizename) {
+string * MySQLinterface::ReadDataFromDB(string& tablename, string& name) {
+	static string parameter_buff[4];
+	parameter_buff[0] = name;
 	string sqlbuf1 = "SELECT * FROM";
-	sqlbuf = sqlbuf1 + tablename;
+	string sqlbuf = sqlbuf1 + tablename;
 	if (mysql_query(m_sock, sqlbuf.c_str()) == 0)
 	{
-
+		printf("æ•°æ®èŽ·å–å¤±è´¥ï¼\n");
+		this->error_num = ERROR_FAILOBTDA;
+		return 0;
 	}
+	
+		unsigned uLine = 0,  uField = 0;
+		MYSQL_ROW row;
+		MYSQL_FIELD* pFieLd(NULL);
+		if (!(m_SQLResultSet = mysql_store_result(m_sock)))
+		{
+			printf("å†…å®¹èŽ·å–å¤±è´¥ï¼\n");
+			this->error_num = ERROR_FAILOBTCO;
+			return 0;
+		}
+		uLine = (unsigned)mysql_num_rows(m_SQLResultSet);
+		uField = (unsigned)mysql_num_fields(m_SQLResultSet);
+		for (int i = 0 ; i < (int)uLine ; i++)
+		{
+			row = mysql_fetch_row(m_SQLResultSet);
+			for (int j = 0; j < (int)uField; j++)
+			{
+				parameter_buff[j] = row[j];
+			}
+			mysql_free_result(m_SQLResultSet);
+			return parameter_buff;
+		}
+}
+BOOL MySQLinterface::DeleteDataFromDB(string& sqlbuf, string& tablename,  string& del_name) {
+	string sqlbuf1 = "DELETE FROM ";
+	string sqlbuf2 = " WHERE name=";
+	sqlbuf = sqlbuf1 + tablename + sqlbuf2;
+	strcat((char*)sqlbuf.c_str(), "'");
+	strcat((char*)sqlbuf.c_str(), del_name.c_str());
+	strcat((char*)sqlbuf.c_str(), "'");
 
+	if (mysql_query(m_sock, sqlbuf.c_str()))
+	{
+		printf("å†…å®¹èŽ·å–å¤±è´¥ï¼\n");
+		this->error_num = ERROR_FAILOBTCO;
+		return 0;
+	}
+	mysql_commit(m_sock);
+	cout << "åˆ é™¤æˆåŠŸï¼" << endl;
 }
 void MySQLinterface::CloseMySQL() {
 	mysql_close(m_sock);
 }
-
