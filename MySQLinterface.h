@@ -5,12 +5,12 @@ class MySQLinterface {
 public:
 	 MySQLinterface();
 	~MySQLinterface(){   }
-    BOOL ConnectDB();
-	BOOL CreateDB(string&);
-	BOOL CreateTable(string &);
-	BOOL WriteDataToDB(string&,string&,string&,string&,string&,string&,string&);
-	BOOL ReadDataFromDB(string&, string&, string&, string&, string&, string&, string&);
-	BOOL DeleteDataFromDB();
+    BOOL   ConnectDB();
+	BOOL   CreateDB(string&);
+	BOOL   CreateTable(string &);
+	BOOL   WriteDataToDB(string&,string&,string&,string&,string&,string&,string&);
+	string  * ReadDataFromDB(string&, string&);
+	BOOL DeleteDataFromDB(string&, string&, string&);
 	void    CloseMySQL();
 public:	
 	int error_num;
